@@ -16,13 +16,13 @@ import (
 // BlogDb ...
 type BlogDb struct {
 	db        *gorm.DB
-	logger    zap.Logger
+	logger    *zap.Logger
 	cacheList []*blog.BlogData
 	cacheMap  map[int64]*blog.BlogData
 }
 
 // NewBlogDb ...
-func NewBlogDb(db *gorm.DB, logger zap.Logger) *BlogDb {
+func NewBlogDb(db *gorm.DB, logger *zap.Logger) *BlogDb {
 	db.AutoMigrate(&blog.BlogData{})
 	return &BlogDb{
 		db:        db,
@@ -72,14 +72,14 @@ func (db *BlogDb) Get(ctx context.Context, id int64) (*blog.BlogData, error) {
 	}
 
 	defer db.logger.Info("get item", zap.String("item", item.String()))
-	return nil, nil
+	return fillData(&item), nil
 }
 
 // Update Blog
 func (db *BlogDb) Update(ctx context.Context, item *blog.BlogData) error {
 	defer db.logger.Info("update item", zap.String("item", item.String()))
 	defer db.clearCache()
-	return nil
+	return db.db.Save(fillData(item)).Error
 }
 
 // Delete Blog
