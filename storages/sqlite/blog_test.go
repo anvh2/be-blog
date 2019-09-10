@@ -10,7 +10,7 @@ import (
 var testBlogDb *BlogDb
 
 func TestMain(m *testing.M) {
-	
+
 	testBlogDb = NewBlogDb()
 }
 
