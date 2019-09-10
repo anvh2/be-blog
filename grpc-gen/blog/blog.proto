@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+package blog;
+
+service BlogService {
+    // List Blog
+    rpc List (ListRequest) returns (ListResponse) {
+        option (google.api.http) = {
+            get: "/blogs"
+        };
+    }
+    // Create Blog
+    rpc Create (BlogData) returns (BlogResponse) {
+        option (google.api.http) = {
+            post: "/blogs"
+            body: "*"
+        };
+    }
+
+    // Get Blog
+    rpc Get (GetRequest) returns (BlogResponse) {
+        option (google.api.http) = {
+            get: "/blogs/{id}"
+        };
+    }
+
+    // Update Blog
+    rpc Update (BlogData) returns (BlogResponse) {
+        option (google.api.http) = {
+            put: "/blogs/{id}"
+        };
+    }
+
+    // Delete Blog
+    rpc Delete (DeleteRequest) returns (BlogResponse) {
+        option (google.api.http) = {
+            delete: "/blogs/{id}"
+        };
+    }
+}
+
+message ListRequest {
+    int64 limit = 1;
+    int64 offset = 2;
+}
+
+message ListResponse {
+    int64 code = 1;
+    string message = 2;
+    repeated BlogData blogs = 3;
+}
+
+message BlogResponse {
+    int64 code = 1;
+    string message = 2;
+    BlogData blog = 3;
+}
+
+message GetRequest {
+    int64 id = 1;
+}
+
+message DeleteRequest {
+    int64 id = 2;
+}
+
+enum Status {
+    DRAFT = 0;
+    PULISH = 1;
+}
+
+message Comment {
+    string author = 1;
+    int64 createTime = 2;
+    string content = 3;
+}
+
+message BlogData {
+    int64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;AUTO_INCREMENT\""];
+    string title = 2;
+    string des = 3;
+    string content = 4;
+    int64 createTime = 5;
+    Status status = 6;
+    string type = 7;
+    int64 likes = 8;
+    int64 views = 9;
+    repeated Comment comments = 10 [(gogoproto.moretags) = "gorm:\"-\""];
+    string commentStr = 11 [(gogoproto.moretags) = "json:\"-\""];
+    repeated string tags = 12 [(gogoproto.moretags) = "gorm:\"-\""];
+    string tagStr = 13 [(gogoproto.moretags) = "json:\"-\""];
+    repeated string images = 14 [(gogoproto.moretags) = "gorm:\"-\""];
+    string imagesStr = 15 [(gogoproto.moretags) = "json:\"-\""];
+    int64 userID = 16;
+    string userAvatar = 17;
+}
