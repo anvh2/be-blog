@@ -39,7 +39,7 @@ func (db *BlogDb) List(ctx context.Context, offset, limit int64) ([]*blog.BlogDa
 	}
 
 	var items []*blog.BlogData
-	if err := db.db.Find(&items).Error; err != nil {
+	if err := db.db.Where("status <> ?", blog.Status_REMOVE).Find(&items).Error; err != nil {
 		return nil, err
 	}
 
@@ -67,7 +67,7 @@ func (db *BlogDb) Get(ctx context.Context, id int64) (*blog.BlogData, error) {
 		return nil, fmt.Errorf("Blog is not found: %d", id)
 	}
 	var item blog.BlogData
-	if err := db.db.First(&item, id).Error; err != nil {
+	if err := db.db.Where("status <> ?", blog.Status_REMOVE).First(&item, id).Error; err != nil {
 		return nil, err
 	}
 
@@ -89,7 +89,14 @@ func (db *BlogDb) Delete(ctx context.Context, id int64) error {
 	}
 	defer db.logger.Info("delete item", zap.Int64("id", id))
 	db.clearCache()
-	return db.db.Delete(&blog.BlogData{Id: id}).Error
+
+	data, err := db.Get(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	data.Status = blog.Status_REMOVE
+	return db.db.Save(data).Error
 }
 
 // Close ...
