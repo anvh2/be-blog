@@ -112,6 +112,8 @@ func (s *Server) Get(ctx context.Context, req *blog.GetRequest) (*blog.BlogRespo
 			Message: err.Error(),
 		}, nil
 	}
+
+	defer s.logger.Info("[Get] get blog", zap.String("blog", data.String()))
 	return &blog.BlogResponse{
 		Code:    1,
 		Message: "OK",
@@ -129,6 +131,8 @@ func (s *Server) Update(ctx context.Context, req *blog.BlogData) (*blog.BlogResp
 			Message: err.Error(),
 		}, nil
 	}
+
+	defer s.logger.Info("[Update] update blog", zap.String("blog", req.String()))
 	return &blog.BlogResponse{
 		Code:    1,
 		Message: "OK",
@@ -153,6 +157,8 @@ func (s *Server) Delete(ctx context.Context, req *blog.DeleteRequest) (*blog.Blo
 			Message: err.Error(),
 		}, nil
 	}
+
+	defer s.logger.Info("[Delete] delete blog", zap.Int64("id", req.Id))
 	return &blog.BlogResponse{
 		Code:    1,
 		Message: "OK",

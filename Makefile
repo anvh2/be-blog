@@ -13,3 +13,6 @@ genpb:
 		--swagger_out=logtostderr=true:grpc-gen/blog \
 		--grpc-gateway_out=logtostderr=true:grpc-gen/blog \
 		grpc-gen/blog/blog.proto
+
+runLocal: 
+	go run main.go blogs --config z-blogs.dev.toml

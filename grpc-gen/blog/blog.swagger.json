@@ -271,7 +271,7 @@
       "type": "string",
       "enum": [
         "DRAFT",
-        "PULISH",
+        "PUBLISH",
         "REMOVE"
       ],
       "default": "DRAFT"

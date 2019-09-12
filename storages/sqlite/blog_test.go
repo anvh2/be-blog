@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/anvh2/z-blogs/grpc-gen/blog"
@@ -20,6 +21,8 @@ func TestMain(m *testing.M) {
 	logger, _ := zap.NewProduction()
 	testBlogDb = NewBlogDb(db, logger)
 	defer testBlogDb.Close()
+
+	os.Exit(m.Run())
 }
 
 func TestConv(t *testing.T) {
@@ -42,6 +45,24 @@ func TestConv(t *testing.T) {
 	assert.Equal(t, []string{"/app/demo.png"}, item1.Images)
 }
 
+func TestCache(t *testing.T) {
+	item := &blog.BlogData{
+		Comments: []*blog.Comment{
+			&blog.Comment{
+				Author:  "anvh2",
+				Content: "Greate",
+			},
+		},
+		Tags:   []string{"Tech"},
+		Images: []string{"/app/demo.png"},
+	}
+
+	testBlogDb.SetCache(item.Id, item, 0)
+	g := testBlogDb.GetCache(item.Id)
+	assert.Equal(t, item, g)
+
+}
+
 func TestInterface(t *testing.T) {
 	item := &blog.BlogData{
 		Comments: []*blog.Comment{
@@ -53,14 +74,29 @@ func TestInterface(t *testing.T) {
 		Tags:   []string{"Tech"},
 		Images: []string{"/app/demo.png"},
 	}
-	fillData(item)
 
 	ctx := context.Background()
 
+	// create api
 	err := testBlogDb.Create(ctx, item)
 	assert.Nil(t, err)
 
+	// get api
 	g, err := testBlogDb.Get(ctx, item.Id)
 	assert.Nil(t, err)
-	assert.Equal(t, item, fillData(g))
+	assert.Equal(t, item, g)
+
+	// delete api
+	err = testBlogDb.Delete(ctx, item.Id)
+	assert.Nil(t, err)
+	gad, err := testBlogDb.Get(ctx, item.Id)
+	assert.NotNil(t, err)
+	assert.Nil(t, gad)
+
+	item.Status = blog.Status_PUBLISH
+	err = testBlogDb.Update(ctx, item)
+	assert.Nil(t, err)
+	gau, err := testBlogDb.Get(ctx, item.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, item, gau)
 }

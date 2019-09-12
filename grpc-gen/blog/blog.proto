@@ -69,7 +69,7 @@ message DeleteRequest {
 
 enum Status {
     DRAFT = 0;
-    PULISH = 1;
+    PUBLISH = 1;
     REMOVE = 2;
 }
 
