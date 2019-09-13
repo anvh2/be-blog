@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/anvh2/z-blogs/grpc-gen/blog"
+	"github.com/anvh2/z-blogs/plugins/poller"
 	"github.com/jinzhu/gorm"
 
 	// include gorm sqlite
@@ -24,8 +25,7 @@ type Item struct {
 	expiration int64
 }
 
-// Expired ...
-func (i *Item) Expired() bool {
+func (i *Item) onExpired() bool {
 	if i.expiration == 0 {
 		return false
 	}
@@ -43,12 +43,27 @@ type BlogDb struct {
 // NewBlogDb ...
 func NewBlogDb(db *gorm.DB, logger *zap.Logger) *BlogDb {
 	db.AutoMigrate(&blog.BlogData{})
+
 	return &BlogDb{
 		db:     db,
 		logger: logger,
 		cache:  make(map[int64]Item),
 		mutex:  &sync.RWMutex{},
 	}
+}
+
+func (db *BlogDb) roundRobin() {
+	for key, item := range db.cache {
+		if item.onExpired() {
+			db.DeleteCache(key)
+		}
+	}
+}
+
+// SyncCache ...
+func (db *BlogDb) SyncCache(duration time.Duration) {
+	poller := poller.NewPoller(db.roundRobin, duration)
+	go poller.Run()
 }
 
 // SetCache ...
