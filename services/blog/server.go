@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/anvh2/z-blogs/grpc-gen/blog"
 	pb "github.com/anvh2/z-blogs/grpc-gen/blog"
@@ -47,7 +46,6 @@ func (s *Server) Run() error {
 	}
 	defer s.logger.Info("[Run] start listen", zap.Int("port", port))
 
-	s.blogDb.SyncCache(24 * time.Hour)
 	return nil
 }
 

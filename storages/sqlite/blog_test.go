@@ -45,24 +45,6 @@ func TestConv(t *testing.T) {
 	assert.Equal(t, []string{"/app/demo.png"}, item1.Images)
 }
 
-func TestCache(t *testing.T) {
-	item := &blog.BlogData{
-		Comments: []*blog.Comment{
-			&blog.Comment{
-				Author:  "anvh2",
-				Content: "Greate",
-			},
-		},
-		Tags:   []string{"Tech"},
-		Images: []string{"/app/demo.png"},
-	}
-
-	testBlogDb.SetCache(item.Id, item, 0)
-	g := testBlogDb.GetCache(item.Id)
-	assert.Equal(t, item, g)
-
-}
-
 func TestInterface(t *testing.T) {
 	item := &blog.BlogData{
 		Comments: []*blog.Comment{
