@@ -15,4 +15,4 @@ genpb:
 		grpc-gen/blog/blog.proto
 
 runLocal: 
-	go run main.go blogs --config z-blogs.dev.toml
+	go run main.go blogs --config z-blogs.local.toml
