@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/anvh2/z-blogs/grpc-gen/blog"
+	"github.com/anvh2/be-blogs/grpc-gen/blog"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -29,7 +29,7 @@ func GetConnDev(port string) *grpc.ClientConn {
 
 func TestMain(m *testing.M) {
 	// read config
-	viper.SetConfigName("z-blogs.dev")
+	viper.SetConfigName("be-blogs.dev")
 	viper.AddConfigPath("../..")
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {

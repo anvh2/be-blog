@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/anvh2/z-blogs/grpc-gen/blog"
-	pb "github.com/anvh2/z-blogs/grpc-gen/blog"
-	"github.com/anvh2/z-blogs/storages"
+	"github.com/anvh2/be-blogs/grpc-gen/blog"
+	pb "github.com/anvh2/be-blogs/grpc-gen/blog"
+	"github.com/anvh2/be-blogs/storages"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

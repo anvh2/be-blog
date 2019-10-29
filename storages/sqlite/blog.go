@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/anvh2/z-blogs/grpc-gen/blog"
+	"github.com/anvh2/be-blogs/grpc-gen/blog"
 	"github.com/jinzhu/gorm"
 
 	// include gorm sqlite
