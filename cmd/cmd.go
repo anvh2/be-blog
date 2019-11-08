@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/anvh2/be-blogs/services/blog"
-	"github.com/anvh2/be-blogs/storages/sqlite"
+	"github.com/anvh2/be-blog/services/blog"
+	"github.com/anvh2/be-blog/storages/sqlite"
 	"github.com/jinzhu/gorm"
 
 	// include gorm sqlite

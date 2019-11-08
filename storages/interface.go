@@ -3,7 +3,7 @@ package storages
 import (
 	"context"
 
-	"github.com/anvh2/be-blogs/grpc-gen/blog"
+	"github.com/anvh2/be-blog/grpc-gen/blog"
 )
 
 // BlogDb ...

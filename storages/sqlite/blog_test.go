@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/anvh2/be-blogs/grpc-gen/blog"
+	"github.com/anvh2/be-blog/grpc-gen/blog"
 	// include gorm sqlite
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

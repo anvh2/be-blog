@@ -12,7 +12,7 @@ genpb:
 		--gogo_out=plugins=grpc:grpc-gen/blog \
 		--swagger_out=logtostderr=true:grpc-gen/blog \
 		--grpc-gateway_out=logtostderr=true:grpc-gen/blog \
-		grpc-gen/blog/blog.proto
+		idl/blog.proto
 
 runLocal: 
-	go run main.go blogs --config be-blogs.local.toml
+	go run main.go blogs --config be-blog.local.toml
