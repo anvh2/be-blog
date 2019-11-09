@@ -14,7 +14,11 @@ import (
 
 var blogClient blog.BlogServiceClient
 
-func GetConnDev(port string) *grpc.ClientConn {
+func getConnDev(port string) *grpc.ClientConn {
+	return nil
+}
+
+func getConnLocal(port string) *grpc.ClientConn {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
 	conn, err := grpc.Dial(":"+port, opts...)
@@ -29,7 +33,7 @@ func GetConnDev(port string) *grpc.ClientConn {
 
 func TestMain(m *testing.M) {
 	// read config
-	viper.SetConfigName("be-blog.dev")
+	viper.SetConfigName("config.dev")
 	viper.AddConfigPath("../..")
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
@@ -37,7 +41,7 @@ func TestMain(m *testing.M) {
 	}
 
 	port := viper.GetString("blogs.grpc_port")
-	blogClient = blog.NewBlogServiceClient(GetConnDev(port))
+	blogClient = blog.NewBlogServiceClient(getConnLocal(port))
 	os.Exit(m.Run())
 }
 

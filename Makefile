@@ -16,3 +16,6 @@ genpb:
 
 runLocal: 
 	go run main.go blogs --config be-blog.local.toml
+
+build: 
+	GOOS=linux GOARCH=amd64 go build

@@ -5,8 +5,8 @@ import (
 
 	"github.com/anvh2/be-blog/services/blog"
 	"github.com/anvh2/be-blog/storages/sqlite"
-	"github.com/jinzhu/gorm"
 
+	"github.com/jinzhu/gorm"
 	// include gorm sqlite
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/spf13/cobra"

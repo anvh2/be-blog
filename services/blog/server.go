@@ -43,6 +43,7 @@ func (s *Server) Run() error {
 	// start the server
 	if err := grpcServer.Serve(lis); err != nil {
 		s.logger.Error("[Run] failed to start server", zap.Error(err))
+		return err
 	}
 	defer s.logger.Info("[Run] start listen", zap.Int("port", port))
 
