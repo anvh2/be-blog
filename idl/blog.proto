@@ -5,7 +5,7 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 package blog;
 
-service BlogService {
+service blogervice {
     // List Blog
     rpc List (ListRequest) returns (ListResponse) {
         option (google.api.http) = {
@@ -15,7 +15,7 @@ service BlogService {
     // Create Blog
     rpc Create (BlogData) returns (BlogResponse) {
         option (google.api.http) = {
-            post: "/blogs"
+            post: "/blog"
             body: "*"
         };
     }
@@ -23,21 +23,21 @@ service BlogService {
     // Get Blog
     rpc Get (GetRequest) returns (BlogResponse) {
         option (google.api.http) = {
-            get: "/blogs/{id}"
+            get: "/blog/{id}"
         };
     }
 
     // Update Blog
     rpc Update (BlogData) returns (BlogResponse) {
         option (google.api.http) = {
-            put: "/blogs/{id}"
+            put: "/blog/{id}"
         };
     }
 
     // Delete Blog
     rpc Delete (DeleteRequest) returns (BlogResponse) {
         option (google.api.http) = {
-            delete: "/blogs/{id}"
+            delete: "/blog/{id}"
         };
     }
 }
@@ -50,7 +50,7 @@ message ListRequest {
 message ListResponse {
     int64 code = 1;
     string message = 2;
-    repeated BlogData blogs = 3;
+    repeated BlogData blog = 3;
 }
 
 message BlogResponse {

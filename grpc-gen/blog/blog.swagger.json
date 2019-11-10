@@ -15,6 +15,107 @@
     "application/json"
   ],
   "paths": {
+    "/blog": {
+      "post": {
+        "summary": "Create Blog",
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogBlogResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/blogBlogData"
+            }
+          }
+        ],
+        "tags": [
+          "blogervice"
+        ]
+      }
+    },
+    "/blog/{id}": {
+      "get": {
+        "summary": "Get Blog",
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogBlogResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "blogervice"
+        ]
+      },
+      "delete": {
+        "summary": "Delete Blog",
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogBlogResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "blogervice"
+        ]
+      },
+      "put": {
+        "summary": "Update Blog",
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogBlogResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "blogervice"
+        ]
+      }
+    },
     "/blogs": {
       "get": {
         "summary": "List Blog",
@@ -44,106 +145,7 @@
           }
         ],
         "tags": [
-          "BlogService"
-        ]
-      },
-      "post": {
-        "summary": "Create Blog",
-        "operationId": "Create",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogBlogResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/blogBlogData"
-            }
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      }
-    },
-    "/blogs/{id}": {
-      "get": {
-        "summary": "Get Blog",
-        "operationId": "Get",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogBlogResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      },
-      "delete": {
-        "summary": "Delete Blog",
-        "operationId": "Delete",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogBlogResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      },
-      "put": {
-        "summary": "Update Blog",
-        "operationId": "Update",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogBlogResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "BlogService"
+          "blogervice"
         ]
       }
     }
@@ -259,7 +261,7 @@
         "message": {
           "type": "string"
         },
-        "blogs": {
+        "blog": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/blogBlogData"

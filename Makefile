@@ -4,7 +4,7 @@ clean:
 	rm -rf $(BIN)
 
 genpb:
-	protoc -I/usr/local/include -Igrpc-gen/blog \
+	protoc -I/usr/local/include -Iidl \
 		-I$$GOPATH/src \
 		-I$$GOPATH/src/github.com/gogo/protobuf/protobuf \
 		-I$$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
@@ -13,9 +13,8 @@ genpb:
 		--swagger_out=logtostderr=true:grpc-gen/blog \
 		--grpc-gateway_out=logtostderr=true:grpc-gen/blog \
 		idl/blog.proto
-
 runLocal: 
-	go run main.go blogs --config be-blog.local.toml
+	go run main.go blogs --config config.dev.toml
 
 build: 
 	GOOS=linux GOARCH=amd64 go build

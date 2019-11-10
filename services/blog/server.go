@@ -7,7 +7,7 @@ import (
 
 	"github.com/anvh2/be-blog/grpc-gen/blog"
 	pb "github.com/anvh2/be-blog/grpc-gen/blog"
-	"github.com/anvh2/be-blog/storages"
+	"github.com/anvh2/be-blog/plugins/storages"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -39,7 +39,7 @@ func (s *Server) Run() error {
 	// create a gRPC server object
 	grpcServer := grpc.NewServer()
 	// attach the Ping service to the server
-	pb.RegisterBlogServiceServer(grpcServer, s)
+	pb.RegisterBlogerviceServer(grpcServer, s)
 	// start the server
 	if err := grpcServer.Serve(lis); err != nil {
 		s.logger.Error("[Run] failed to start server", zap.Error(err))
@@ -73,7 +73,7 @@ func (s *Server) List(ctx context.Context, req *blog.ListRequest) (*blog.ListRes
 	return &blog.ListResponse{
 		Code:    1,
 		Message: "OK",
-		Blogs:   data,
+		Blog:    data,
 	}, nil
 }
 

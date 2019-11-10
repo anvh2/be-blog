@@ -1,5 +1,6 @@
 [blogs]
 grpc_port = 55101
 http_port = 55102
+proxy_port = 55103
 log_path = "logs/log.log"
-data_path = "storages/database/blogs.db"
+data_path = "plugins/storages/database/blogs.db"

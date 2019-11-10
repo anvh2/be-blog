@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/anvh2/be-blog/plugins/proxy"
+	"github.com/anvh2/be-blog/plugins/storages/sqlite"
 	"github.com/anvh2/be-blog/services/blog"
-	"github.com/anvh2/be-blog/storages/sqlite"
 
 	"github.com/jinzhu/gorm"
 	// include gorm sqlite
@@ -30,11 +32,13 @@ var blogCmd = &cobra.Command{
 		config.EncoderConfig.MessageKey = "message"
 
 		logger, err := config.Build()
-
 		if err != nil {
 			fmt.Println("failed to new logger production")
 			return err
 		}
+
+		proxy := proxy.NewReverseProxy(logger)
+		go proxy.Run(context.Background())
 
 		db, err := gorm.Open("sqlite3", viper.GetString("blogs.data_path"))
 		if err != nil {
@@ -44,7 +48,9 @@ var blogCmd = &cobra.Command{
 
 		blogDb := sqlite.NewBlogDb(db, logger)
 		server := blog.NewServer(blogDb, logger)
-		return server.Run()
+		err = server.Run()
+
+		return err
 	},
 }
 

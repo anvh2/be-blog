@@ -29,17 +29,17 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
 var (
-	filter_BlogService_List_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_Blogervice_List_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_BlogService_List_0(ctx context.Context, marshaler runtime.Marshaler, client BlogServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Blogervice_List_0(ctx context.Context, marshaler runtime.Marshaler, client BlogerviceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BlogService_List_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Blogervice_List_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -48,7 +48,7 @@ func request_BlogService_List_0(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func request_BlogService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client BlogServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Blogervice_Create_0(ctx context.Context, marshaler runtime.Marshaler, client BlogerviceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq BlogData
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func request_BlogService_Create_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_BlogService_Get_0(ctx context.Context, marshaler runtime.Marshaler, client BlogServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Blogervice_Get_0(ctx context.Context, marshaler runtime.Marshaler, client BlogerviceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetRequest
 	var metadata runtime.ServerMetadata
 
@@ -93,10 +93,10 @@ func request_BlogService_Get_0(ctx context.Context, marshaler runtime.Marshaler,
 }
 
 var (
-	filter_BlogService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_Blogervice_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_BlogService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client BlogServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Blogervice_Update_0(ctx context.Context, marshaler runtime.Marshaler, client BlogerviceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq BlogData
 	var metadata runtime.ServerMetadata
 
@@ -121,7 +121,7 @@ func request_BlogService_Update_0(ctx context.Context, marshaler runtime.Marshal
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BlogService_Update_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Blogervice_Update_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -130,7 +130,7 @@ func request_BlogService_Update_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_BlogService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client BlogServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Blogervice_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client BlogerviceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteRequest
 	var metadata runtime.ServerMetadata
 
@@ -157,9 +157,9 @@ func request_BlogService_Delete_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-// RegisterBlogServiceHandlerFromEndpoint is same as RegisterBlogServiceHandler but
+// RegisterBlogerviceHandlerFromEndpoint is same as RegisterBlogerviceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterBlogServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterBlogerviceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -179,23 +179,23 @@ func RegisterBlogServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 		}()
 	}()
 
-	return RegisterBlogServiceHandler(ctx, mux, conn)
+	return RegisterBlogerviceHandler(ctx, mux, conn)
 }
 
-// RegisterBlogServiceHandler registers the http handlers for service BlogService to "mux".
+// RegisterBlogerviceHandler registers the http handlers for service Blogervice to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterBlogServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterBlogServiceHandlerClient(ctx, mux, NewBlogServiceClient(conn))
+func RegisterBlogerviceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterBlogerviceHandlerClient(ctx, mux, NewBlogerviceClient(conn))
 }
 
-// RegisterBlogServiceHandlerClient registers the http handlers for service BlogService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "BlogServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "BlogServiceClient"
+// RegisterBlogerviceHandlerClient registers the http handlers for service Blogervice
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "BlogerviceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "BlogerviceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "BlogServiceClient" to call the correct interceptors.
-func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client BlogServiceClient) error {
+// "BlogerviceClient" to call the correct interceptors.
+func RegisterBlogerviceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client BlogerviceClient) error {
 
-	mux.Handle("GET", pattern_BlogService_List_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Blogervice_List_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -204,18 +204,18 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_BlogService_List_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Blogervice_List_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_BlogService_List_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Blogervice_List_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_BlogService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Blogervice_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -224,18 +224,18 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_BlogService_Create_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Blogervice_Create_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_BlogService_Create_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Blogervice_Create_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_BlogService_Get_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Blogervice_Get_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -244,18 +244,18 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_BlogService_Get_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Blogervice_Get_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_BlogService_Get_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Blogervice_Get_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_BlogService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_Blogervice_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -264,18 +264,18 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_BlogService_Update_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Blogervice_Update_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_BlogService_Update_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Blogervice_Update_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_BlogService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_Blogervice_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -284,14 +284,14 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_BlogService_Delete_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Blogervice_Delete_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_BlogService_Delete_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Blogervice_Delete_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -299,25 +299,25 @@ func RegisterBlogServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_BlogService_List_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"blogs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Blogervice_List_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"blogs"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_BlogService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"blogs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Blogervice_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"blog"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_BlogService_Get_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blogs", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Blogervice_Get_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blog", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_BlogService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blogs", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Blogervice_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blog", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_BlogService_Delete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blogs", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Blogervice_Delete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"blog", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
-	forward_BlogService_List_0 = runtime.ForwardResponseMessage
+	forward_Blogervice_List_0 = runtime.ForwardResponseMessage
 
-	forward_BlogService_Create_0 = runtime.ForwardResponseMessage
+	forward_Blogervice_Create_0 = runtime.ForwardResponseMessage
 
-	forward_BlogService_Get_0 = runtime.ForwardResponseMessage
+	forward_Blogervice_Get_0 = runtime.ForwardResponseMessage
 
-	forward_BlogService_Update_0 = runtime.ForwardResponseMessage
+	forward_Blogervice_Update_0 = runtime.ForwardResponseMessage
 
-	forward_BlogService_Delete_0 = runtime.ForwardResponseMessage
+	forward_Blogervice_Delete_0 = runtime.ForwardResponseMessage
 )
