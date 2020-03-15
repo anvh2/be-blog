@@ -47,7 +47,7 @@ func (db *BlogDb) List(ctx context.Context, offset, limit int64) ([]*blog.BlogDa
 
 // Create Blog
 func (db *BlogDb) Create(ctx context.Context, item *blog.BlogData) error {
-	defer db.logger.Info("create item", zap.String("item", item.String()))
+	defer db.logger.Info("[Create]create item", zap.String("item", item.String()))
 	return db.db.Create(fillData(item)).Error
 }
 

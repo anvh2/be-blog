@@ -1,45 +1,109 @@
 syntax = "proto3";
 
 import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 package blog;
 
-service blogervice {
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+	info: {
+		title: "Blog Api";
+		version: "1.0";
+		contact: {
+			name: "go-grpc-http-rest-microservice-tutorial project";
+			url: "https://github.com/amsokol/go-grpc-http-rest-microservice-tutorial";
+			email: "medium@amsokol.com";
+		};
+	};
+	schemes: HTTP;
+	host: "localhost";
+	consumes: "application/json"
+	produces: "application/json";
+	security_definitions: {
+		security: {
+		key: "bearerAuth";
+		value: {
+			type: TYPE_API_KEY; // = apiKey
+			name: "Authorization";
+			in: IN_HEADER; // = header
+		}
+		}
+	};
+	security: [
+		{
+			security_requirement: {
+				key: "bearerAuth";
+				value: {}
+			}
+		}
+	];
+	responses: {
+		key: "404";
+		value: {
+			description: "Returned when the resource does not exist.";
+			schema: {
+				json_schema: {
+					type: STRING;
+				}
+			}
+		}
+	}
+};
+
+service BlogService {
+    rpc Login (LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/login"
+            body: "*"
+        };
+        // option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+        //     security: { }
+        // };
+    }
+
     // List Blog
     rpc List (ListRequest) returns (ListResponse) {
         option (google.api.http) = {
-            get: "/blogs"
+            get: "/v1/blogs"
         };
     }
     // Create Blog
-    rpc Create (BlogData) returns (BlogResponse) {
+    rpc Create (CreateRequest) returns (CreateResponse) {
         option (google.api.http) = {
-            post: "/blog"
+            post: "/v1/create"
             body: "*"
         };
     }
 
     // Get Blog
-    rpc Get (GetRequest) returns (BlogResponse) {
+    rpc Get (GetRequest) returns (GetResponse) {
         option (google.api.http) = {
-            get: "/blog/{id}"
+            get: "/v1/blog/{blogID}"
         };
     }
 
     // Update Blog
-    rpc Update (BlogData) returns (BlogResponse) {
+    rpc Update (UpdateRequest) returns (UpdateResponse) {
         option (google.api.http) = {
-            put: "/blog/{id}"
+            put: "/v1/blog/{blogID}"
         };
     }
 
     // Delete Blog
-    rpc Delete (DeleteRequest) returns (BlogResponse) {
+    rpc Delete (DeleteRequest) returns (DeleteResponse) {
         option (google.api.http) = {
-            delete: "/blog/{id}"
+            delete: "/v1/blog/{blogID}"
         };
     }
+}
+
+message LoginRequest {
+
+}
+
+message LoginResponse {
+
 }
 
 message ListRequest {
@@ -53,24 +117,66 @@ message ListResponse {
     repeated BlogData blog = 3;
 }
 
-message BlogResponse {
+message CreateRequest {
+    string header = 1;
+    string subtitle = 2;
+    string background = 3;
+    string content = 4;
+    int32 readTime = 5;
+}
+
+message CreateResponse {
     int64 code = 1;
     string message = 2;
-    BlogData blog = 3;
 }
 
 message GetRequest {
-    int64 id = 1;
+    int64 blogID = 1;
+}
+
+message GetResponse {
+    message Data {
+
+    }
+    int64 code = 1;
+    string message = 2;
+    Data data = 3;
+    BlogData blog = 4;
+}
+
+message UpdateRequest {
+    int64 blogID = 1;
+    string header = 2;
+    string subtitle = 3;
+    string background = 4;
+    string content = 5;
+}
+
+message UpdateResponse {
+    int64 code = 1;
+    string message = 2;
 }
 
 message DeleteRequest {
-    int64 id = 2;
+    int64 blogID = 1;
+}
+
+message DeleteResponse {
+    int64 code = 1;
+    string message = 2;
 }
 
 enum Status {
-    DRAFT = 0;
-    PUBLISH = 1;
-    REMOVE = 2;
+    INVALID = 0;
+    DRAFT = 1;
+    PENDING = 2;
+    PUBLISHED = 3;
+    REMOVE = 4;
+}
+
+enum Type {
+    PUBLIC = 0;
+    PRIVATE = 1;
 }
 
 message Comment {
@@ -81,20 +187,21 @@ message Comment {
 
 message BlogData {
     int64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;AUTO_INCREMENT\""];
-    string title = 2;
-    string des = 3;
-    string content = 4;
-    int64 createTime = 5;
-    Status status = 6;
-    string type = 7;
-    int64 likes = 8;
-    int64 views = 9;
-    repeated Comment comments = 10 [(gogoproto.moretags) = "gorm:\"-\""];
-    string commentStr = 11 [(gogoproto.moretags) = "json:\"-\""];
-    repeated string tags = 12 [(gogoproto.moretags) = "gorm:\"-\""];
-    string tagStr = 13 [(gogoproto.moretags) = "json:\"-\""];
-    repeated string images = 14 [(gogoproto.moretags) = "gorm:\"-\""];
-    string imagesStr = 15 [(gogoproto.moretags) = "json:\"-\""];
-    int64 userID = 16;
-    string userAvatar = 17;
+    string header = 2;
+    string subtitle = 3;
+    string background = 4;
+    string content = 5;
+    int64 createTime = 6;
+    Status status = 7;
+    Type type = 8;
+    int64 likes = 9;
+    int64 views = 10;
+    repeated Comment comments = 11 [(gogoproto.moretags) = "gorm:\"-\""];
+    string commentStr = 12 [(gogoproto.moretags) = "json:\"-\""];
+    repeated string tags = 13 [(gogoproto.moretags) = "gorm:\"-\""];
+    string tagStr = 14 [(gogoproto.moretags) = "json:\"-\""];
+    repeated string images = 15 [(gogoproto.moretags) = "gorm:\"-\""];
+    string imagesStr = 16 [(gogoproto.moretags) = "json:\"-\""];
+    string userID = 17;
+    int32 readTime = 18;
 }

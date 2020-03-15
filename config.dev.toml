@@ -1,6 +1,15 @@
-[blogs]
+[app]
+app_version = "0.0.1"
+
+[blog]
 grpc_port = 55101
 http_port = 55102
 proxy_port = 55103
-log_path = "logs/log.log"
-data_path = "plugins/storages/database/blogs.db"
+log_path = "logs/blog.log"
+data_path = "plugins/storages/database/blog-200315.db"
+
+[images]
+http_port = 55201
+dir_storage = "./public/images/"
+form_file = "image"
+log_path = "logs/images.log"
