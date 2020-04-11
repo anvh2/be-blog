@@ -8,6 +8,12 @@ proxy_port = 55103
 log_path = "logs/blog.log"
 data_path = "plugins/storages/database/blog-200315.db"
 
+[users]
+grpc_port = 55301
+http_port = 55302
+proxy_port = 55303
+log_path = "logs/user.log"
+
 [images]
 http_port = 55201
 dir_storage = "./public/images/"

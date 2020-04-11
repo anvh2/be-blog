@@ -44,7 +44,6 @@ func NewServer() *Server {
 	logger, err := config.Build()
 	if err != nil {
 		fmt.Println("failed to new logger production")
-		// return err
 	}
 
 	proxy := NewReverseProxy(logger)
@@ -104,11 +103,6 @@ func (s *Server) Run() error {
 	<-done
 	fmt.Println("Shutdown")
 	return nil
-}
-
-// Login ...
-func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-	return nil, nil
 }
 
 // List Blog

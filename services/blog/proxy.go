@@ -46,16 +46,20 @@ func (p *ReverseProxy) Run(ctx context.Context) error {
 		return err
 	}
 
-	addr := fmt.Sprintf(":%d", viper.GetInt("blog.proxy_port"))
+	httpPort := viper.GetInt("blog.proxy_port")
+	addr := fmt.Sprintf(":%d", httpPort)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: middlewares.AllowCORS(mux),
 	}
+
+	p.logger.Info("[Run] start proxy", zap.Int("port", httpPort))
+
 	if err := srv.ListenAndServe(); err != nil {
-		p.logger.Error("[Run] failed to start proxy", zap.String("address", addr))
+		p.logger.Error("[Run] failed to start proxy", zap.Int("port", httpPort))
 		return err
 	}
-	defer p.logger.Info("[Run] start proxy", zap.String("address", addr))
+
 	return nil
 }
 

@@ -14,7 +14,7 @@ var (
 
 // RootCmd ...
 var RootCmd = &cobra.Command{
-	Use:     "blog",
+	Use:     "service",
 	Short:   "Blog service",
 	Version: "0.0.0",
 }
@@ -29,7 +29,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is be-blog.toml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.dev.toml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -37,7 +37,7 @@ func initConfig() {
 	if cfgFile != "" { // enable ability to specify config file via flag
 		viper.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigName("be-blog") // name of config file (without extension)
+		viper.SetConfigName("config.dev") // name of config file (without extension)
 	}
 
 	viper.AddConfigPath(".") // adding home directory as first search path

@@ -218,48 +218,12 @@
           "BlogService"
         ]
       }
-    },
-    "/v1/login": {
-      "post": {
-        "operationId": "Login",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogLoginResponse"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/blogLoginRequest"
-            }
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      }
     }
   },
   "definitions": {
+    "GetResponseData": {
+      "type": "object"
+    },
     "blogBlogData": {
       "type": "object",
       "properties": {
@@ -403,6 +367,9 @@
         "message": {
           "type": "string"
         },
+        "data": {
+          "$ref": "#/definitions/GetResponseData"
+        },
         "blog": {
           "$ref": "#/definitions/blogBlogData"
         }
@@ -425,12 +392,6 @@
           }
         }
       }
-    },
-    "blogLoginRequest": {
-      "type": "object"
-    },
-    "blogLoginResponse": {
-      "type": "object"
     },
     "blogStatus": {
       "type": "string",

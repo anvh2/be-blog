@@ -52,16 +52,6 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 };
 
 service BlogService {
-    rpc Login (LoginRequest) returns (LoginResponse) {
-        option (google.api.http) = {
-            post: "/v1/login"
-            body: "*"
-        };
-        // option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
-        //     security: { }
-        // };
-    }
-
     // List Blog
     rpc List (ListRequest) returns (ListResponse) {
         option (google.api.http) = {
@@ -96,14 +86,6 @@ service BlogService {
             delete: "/v1/blog/{blogID}"
         };
     }
-}
-
-message LoginRequest {
-
-}
-
-message LoginResponse {
-
 }
 
 message ListRequest {

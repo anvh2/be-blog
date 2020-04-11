@@ -3,3 +3,9 @@ grpc_port = 55101
 http_port = 55102
 log_path = "logs/log.log"
 data_path = "storages/database/blogs.db"
+
+[user]
+grpc_port = 55301
+http_port = 55302
+proxy_port = 55303
+log_path = "logs/user.log"

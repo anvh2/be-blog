@@ -1,12 +1,14 @@
 package integration
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/anvh2/be-blog/grpc-gen/blog"
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
@@ -43,6 +45,16 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+func TestGetBlog(t *testing.T) {
+	res, err := blogClient.Get(context.Background(), &blog.GetRequest{
+		BlogID: 1,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(res)
+}
+
 func TestAPI(t *testing.T) {
 	// item := &blog.BlogData{
 	// 	Comments: []*blog.Comment{
@@ -61,11 +73,13 @@ func TestAPI(t *testing.T) {
 	// c, err := blogClient.Create(ctx, item)
 	// assert.Nil(t, err)
 
-	// // api get
-	// g, err := blogClient.Get(ctx, &blog.GetRequest{
-	// 	Id: c.Blog.Id,
-	// })
-	// assert.Nil(t, err)
+	// api get
+	fmt.Println("xxx")
+	g, err := blogClient.Get(context.Background(), &blog.GetRequest{
+		BlogID: 1,
+	})
+	assert.Nil(t, err)
+	fmt.Println(g)
 	// assert.Equal(t, c.Blog, g.Blog)
 
 	// // api delete
