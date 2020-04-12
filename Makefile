@@ -1,4 +1,4 @@
-BIN = blog
+BIN = be-blog
 
 clean:
 	rm -rf $(BIN)

@@ -52,13 +52,11 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 };
 
 service BlogService {
-    // List Blog
     rpc List (ListRequest) returns (ListResponse) {
         option (google.api.http) = {
             get: "/v1/blogs"
         };
     }
-    // Create Blog
     rpc Create (CreateRequest) returns (CreateResponse) {
         option (google.api.http) = {
             post: "/v1/create"
@@ -66,86 +64,29 @@ service BlogService {
         };
     }
 
-    // Get Blog
     rpc Get (GetRequest) returns (GetResponse) {
         option (google.api.http) = {
             get: "/v1/blog/{blogID}"
         };
     }
 
-    // Update Blog
     rpc Update (UpdateRequest) returns (UpdateResponse) {
         option (google.api.http) = {
             put: "/v1/blog/{blogID}"
         };
     }
 
-    // Delete Blog
-    rpc Delete (DeleteRequest) returns (DeleteResponse) {
+    rpc Remove (RemoveRequest) returns (RemoveResponse) {
         option (google.api.http) = {
-            delete: "/v1/blog/{blogID}"
+            put: "/v1/blog/{blogID}"
         };
     }
-}
 
-message ListRequest {
-    int64 limit = 1;
-    int64 offset = 2;
-}
-
-message ListResponse {
-    int64 code = 1;
-    string message = 2;
-    repeated BlogData blog = 3;
-}
-
-message CreateRequest {
-    string header = 1;
-    string subtitle = 2;
-    string background = 3;
-    string content = 4;
-    int32 readTime = 5;
-}
-
-message CreateResponse {
-    int64 code = 1;
-    string message = 2;
-}
-
-message GetRequest {
-    int64 blogID = 1;
-}
-
-message GetResponse {
-    message Data {
-
+    rpc Publish (PublishRequest) returns (PublishResponse) {
+        option (google.api.http) = {
+            put: "/v1/blog/{blogID}"
+        };
     }
-    int64 code = 1;
-    string message = 2;
-    Data data = 3;
-    BlogData blog = 4;
-}
-
-message UpdateRequest {
-    int64 blogID = 1;
-    string header = 2;
-    string subtitle = 3;
-    string background = 4;
-    string content = 5;
-}
-
-message UpdateResponse {
-    int64 code = 1;
-    string message = 2;
-}
-
-message DeleteRequest {
-    int64 blogID = 1;
-}
-
-message DeleteResponse {
-    int64 code = 1;
-    string message = 2;
 }
 
 enum Status {
@@ -161,6 +102,88 @@ enum Type {
     PRIVATE = 1;
 }
 
+message ListRequest {
+    int64 limit = 1;
+    int64 offset = 2;
+}
+
+message ListResponse {
+    message Data {
+        repeated BlogData blog = 1;
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
+message CreateRequest {
+    string userID = 1;
+    string header = 2;
+    string subtitle = 3;
+    string background = 4;
+    string content = 5;
+    int32 readTime = 6;
+}
+
+message CreateResponse {
+    message Data {
+        string blogID = 1;
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
+message GetRequest {
+    string blogID = 1;
+}
+
+message GetResponse {
+    message Data {
+        BlogData blog = 1;
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
+message UpdateRequest {
+    string blogID = 1;
+    string header = 2;
+    string subtitle = 3;
+    string background = 4;
+    string content = 5;
+}
+
+message UpdateResponse {
+    message Data {
+
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
+message RemoveRequest {
+    string blogID = 1;
+}
+
+message RemoveResponse {
+    message Data {
+
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
+message PublishRequest {
+    string blogID = 1;
+}
+
+message PublishResponse {
+    message Data {
+        bool status = 1;
+    }
+    Data data = 1;
+    Error error = 2;
+}
+
 message Comment {
     string author = 1;
     int64 createTime = 2;
@@ -168,7 +191,7 @@ message Comment {
 }
 
 message BlogData {
-    int64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;AUTO_INCREMENT\""];
+    string blogID = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
     string header = 2;
     string subtitle = 3;
     string background = 4;
@@ -186,4 +209,9 @@ message BlogData {
     string imagesStr = 16 [(gogoproto.moretags) = "json:\"-\""];
     string userID = 17;
     int32 readTime = 18;
+}
+
+message Error {
+    int32 code = 1;
+    string message = 2;
 }

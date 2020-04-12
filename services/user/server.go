@@ -1,8 +1,8 @@
 package backend
 
 import (
-	"context"
 	"log"
+	"net/http"
 
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -15,6 +15,7 @@ import (
 // Server ...
 type Server struct {
 	logger *zap.Logger
+	userDb UserDb
 }
 
 // NewServer ...
@@ -40,33 +41,15 @@ func (s *Server) Run() error {
 		s.logger.Fatal("Can't new grpc server", zap.Error(err))
 	}
 
-	// server.EnableHTTP(pb.RegisterUserServiceHandlerFromEndpoint, "")
+	server.EnableHTTP(pb.RegisterUserServiceHandlerFromEndpoint, "")
+	server.AddShutdownHook(func() {
+		s.userDb.Close()
+	})
+	server.WithHTTPAuthFunc(s.authen, []string{""})
 
 	return server.Run()
 }
 
-// Login ...
-func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-	return &pb.LoginResponse{
-		Data: &pb.LoginResponse_Data{
-			Token: "",
-		},
-		Error: &pb.Error{
-			Code:    1,
-			Message: "OK",
-		},
-	}, nil
-}
+func (s *Server) authen(r *http.Request) {
 
-// Register ...
-func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	return &pb.RegisterResponse{
-		Data: &pb.RegisterResponse_Data{
-			Success: true,
-		},
-		Error: &pb.Error{
-			Code:    1,
-			Message: "OK",
-		},
-	}, nil
 }

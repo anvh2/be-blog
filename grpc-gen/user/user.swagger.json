@@ -147,6 +147,21 @@
     "userLoginResponseData": {
       "type": "object",
       "properties": {
+        "userID": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "dName": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/userRole"
+        },
         "token": {
           "type": "string"
         }
@@ -159,6 +174,15 @@
           "type": "string"
         },
         "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        },
+        "dName": {
+          "type": "string"
+        },
+        "avatar": {
           "type": "string"
         }
       }
@@ -182,6 +206,13 @@
           "format": "boolean"
         }
       }
+    },
+    "userRole": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
     }
   }
 }

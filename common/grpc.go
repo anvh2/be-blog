@@ -15,7 +15,6 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/soheilhy/cmux"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -26,16 +25,20 @@ type GRPCRegister func(*grpc.Server)
 // HTTPRegister ...
 type HTTPRegister func(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error)
 
+type shutdownHook func()
+
 // GRPCServer ...
 type GRPCServer struct {
-	server       *grpc.Server
-	listener     net.Listener
-	port         int
-	logger       *zap.Logger
-	rootPath     string
-	grpcRegister GRPCRegister
-	httpRegister HTTPRegister
-	wgServe      *sync.WaitGroup
+	server         *grpc.Server
+	listener       net.Listener
+	port           int
+	logger         *zap.Logger
+	rootPath       string
+	grpcRegister   GRPCRegister
+	httpRegister   HTTPRegister
+	hooks          []shutdownHook
+	httpAuth       func(r *http.Request)
+	excludeMethods []string
 }
 
 // NewGrpcServer ...
@@ -43,7 +46,6 @@ func NewGrpcServer(port int, grpcRegister GRPCRegister) (*GRPCServer, error) {
 	return &GRPCServer{
 		port:         port,
 		grpcRegister: grpcRegister,
-		wgServe:      &sync.WaitGroup{},
 	}, nil
 }
 
@@ -57,33 +59,9 @@ func (s *GRPCServer) Run() error {
 	s.listener = lis
 
 	if s.httpRegister != nil {
-		m := cmux.New(s.listener)
-		grpcListener := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
-		httpListener := m.Match(cmux.HTTP1Fast())
-
-		s.wgServe.Add(1)
-		go func() error {
-			defer s.wgServe.Done()
-			return s.grpcServe(grpcListener)
-		}()
-
-		s.wgServe.Add(1)
-		go func() error {
-			defer s.wgServe.Done()
-			return s.httpServe(httpListener)
-		}()
-
-		s.wgServe.Add(1)
-		go func() error {
-			defer s.wgServe.Done()
-			return m.Serve()
-		}()
+		go s.dualServe(s.listener)
 	} else {
-		s.wgServe.Add(1)
-		go func() error {
-			defer s.wgServe.Done()
-			return s.grpcServe(s.listener)
-		}()
+		go s.grpcServe(s.listener)
 	}
 
 	sig := make(chan os.Signal, 1)
@@ -95,8 +73,7 @@ func (s *GRPCServer) Run() error {
 	go func() {
 		<-sig
 		fmt.Println("Shuting down server ...")
-		err := s.listener.Close()
-		s.wgServe.Wait()
+		err = s.runHooks()
 		done <- err
 	}()
 
@@ -105,6 +82,35 @@ func (s *GRPCServer) Run() error {
 	fmt.Println("Server is shutdown")
 
 	return err
+}
+
+func (s *GRPCServer) dualServe(l net.Listener) error {
+	wg := &sync.WaitGroup{}
+	m := cmux.New(l)
+	grpcListener := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
+	httpListener := m.Match(cmux.HTTP1Fast())
+
+	wg.Add(1)
+	go func() error {
+		defer wg.Done()
+		return s.grpcServe(grpcListener)
+	}()
+
+	wg.Add(1)
+	go func() error {
+		defer wg.Done()
+		return s.httpServe(httpListener)
+	}()
+
+	wg.Add(1)
+	go func() error {
+		defer wg.Done()
+		return m.Serve()
+	}()
+
+	wg.Wait()
+
+	return nil
 }
 
 func (s *GRPCServer) grpcServe(l net.Listener) error {
@@ -130,28 +136,48 @@ func (s *GRPCServer) httpServe(l net.Listener) error {
 		return err
 	}
 
-	httpPort := viper.GetInt("blog.proxy_port")
-	addr := fmt.Sprintf(":%d", httpPort)
+	handler := middlewares.AllowCORS(mux)
+	handler = middlewares.RecoverHTTPServer(handler)
+	handler = middlewares.AuthenHTTPServer(handler, s.httpAuth, s.excludeMethods)
+
 	server := &http.Server{
-		Addr:    addr,
-		Handler: middlewares.AllowCORS(mux),
+		Addr:    fmt.Sprintf(":%d", s.port),
+		Handler: handler,
 	}
 
 	return server.Serve(l)
 }
 
 // EnableHTTP ...
-func (s *GRPCServer) EnableHTTP(httpRegister HTTPRegister, rootPath string) *GRPCServer {
+func (s *GRPCServer) EnableHTTP(httpRegister HTTPRegister, rootPath string) {
 	s.httpRegister = httpRegister
 	s.rootPath = rootPath
-	return s
 }
 
 // AddShutdownHook ...
 func (s *GRPCServer) AddShutdownHook(fn func()) {
+	if fn == nil {
+		return
+	}
 
+	s.hooks = append(s.hooks, fn)
 }
 
-func (s *GRPCServer) runShutdownHook() {
+// WithLogger ...
+func (s *GRPCServer) WithLogger(logger *zap.Logger) {
+	s.logger = logger
+}
 
+// WithHTTPAuthFunc ...
+func (s *GRPCServer) WithHTTPAuthFunc(auth func(r *http.Request), excludeMethods []string) {
+	s.httpAuth = auth
+	s.excludeMethods = excludeMethods
+}
+
+func (s *GRPCServer) runHooks() error {
+	for _, hook := range s.hooks {
+		hook()
+	}
+
+	return s.listener.Close()
 }
