@@ -77,6 +77,14 @@ func NewServer() *Server {
 
 // Run ...
 func (s *Server) Run() error {
+	if viper.GetString("app.env") == "staging" {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("recovered", r)
+			}
+		}()
+	}
+
 	port := viper.GetInt("blog.grpc_port")
 	server, err := common.NewGrpcServer(port, func(server *grpc.Server) {
 		pb.RegisterBlogServiceServer(server, s)
