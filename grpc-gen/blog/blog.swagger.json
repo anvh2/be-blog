@@ -20,124 +20,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/blog/{blogID}": {
-      "get": {
-        "operationId": "Get",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogGetResponse"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/gatewayruntimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "blogID",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      },
-      "put": {
-        "operationId": "Publish",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogPublishResponse"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/gatewayruntimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "blogID",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      }
-    },
-    "/v1/blogs": {
-      "get": {
-        "operationId": "List",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/blogListResponse"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/gatewayruntimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "BlogService"
-        ]
-      }
-    },
-    "/v1/create": {
+    "/v1/blog/create": {
       "post": {
         "operationId": "Create",
         "responses": {
@@ -175,6 +58,199 @@
           "BlogService"
         ]
       }
+    },
+    "/v1/blog/list": {
+      "get": {
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogListResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/gatewayruntimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/v1/blog/publish/{blogID}": {
+      "put": {
+        "operationId": "Publish",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogPublishResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/gatewayruntimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "blogID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/v1/blog/remove/{blogID}": {
+      "put": {
+        "operationId": "Remove",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogRemoveResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/gatewayruntimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "blogID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/v1/blog/update/{blogID}": {
+      "put": {
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogUpdateResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/gatewayruntimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "blogID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
+    },
+    "/v1/blog/view/{blogID}": {
+      "get": {
+        "operationId": "View",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/blogViewResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/gatewayruntimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "blogID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "BlogService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -206,6 +282,19 @@
         "type": {
           "$ref": "#/definitions/blogType"
         },
+        "userID": {
+          "type": "string"
+        },
+        "userDName": {
+          "type": "string"
+        },
+        "userAvatar": {
+          "type": "string"
+        },
+        "readTime": {
+          "type": "integer",
+          "format": "int32"
+        },
         "likes": {
           "type": "string",
           "format": "int64"
@@ -214,15 +303,6 @@
           "type": "string",
           "format": "int64"
         },
-        "comments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/blogComment"
-          }
-        },
-        "commentStr": {
-          "type": "string"
-        },
         "tags": {
           "type": "array",
           "items": {
@@ -230,37 +310,6 @@
           }
         },
         "tagStr": {
-          "type": "string"
-        },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "imagesStr": {
-          "type": "string"
-        },
-        "userID": {
-          "type": "string"
-        },
-        "readTime": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "blogComment": {
-      "type": "object",
-      "properties": {
-        "author": {
-          "type": "string"
-        },
-        "createTime": {
-          "type": "string",
-          "format": "int64"
-        },
-        "content": {
           "type": "string"
         }
       }
@@ -317,25 +366,9 @@
         },
         "message": {
           "type": "string"
-        }
-      }
-    },
-    "blogGetResponse": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "$ref": "#/definitions/blogGetResponseData"
         },
-        "error": {
-          "$ref": "#/definitions/blogError"
-        }
-      }
-    },
-    "blogGetResponseData": {
-      "type": "object",
-      "properties": {
-        "blog": {
-          "$ref": "#/definitions/blogBlogData"
+        "detail": {
+          "type": "string"
         }
       }
     },
@@ -353,11 +386,15 @@
     "blogListResponseData": {
       "type": "object",
       "properties": {
-        "blog": {
+        "blogs": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/blogBlogData"
           }
+        },
+        "totalBlogs": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -427,6 +464,25 @@
     },
     "blogUpdateResponseData": {
       "type": "object"
+    },
+    "blogViewResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/blogViewResponseData"
+        },
+        "error": {
+          "$ref": "#/definitions/blogError"
+        }
+      }
+    },
+    "blogViewResponseData": {
+      "type": "object",
+      "properties": {
+        "blog": {
+          "$ref": "#/definitions/blogBlogData"
+        }
+      }
     },
     "gatewayruntimeError": {
       "type": "object",

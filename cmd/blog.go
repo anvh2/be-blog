@@ -2,7 +2,6 @@ package cmd
 
 import (
 	backend "github.com/anvh2/be-blog/services/blog"
-
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +12,6 @@ var blogCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		server := backend.NewServer()
 		return server.Run()
-
 	},
 }
 

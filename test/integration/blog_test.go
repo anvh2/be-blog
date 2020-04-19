@@ -1,12 +1,14 @@
 package integration
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/anvh2/be-blog/grpc-gen/blog"
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
@@ -43,6 +45,40 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestAPI(t *testing.T) {
+func TestBasicCreateView(t *testing.T) {
+	item := &blog.CreateRequest{
+		UserID:     "20041600000001",
+		Header:     "Clean Code",
+		Subtitle:   "How to write smart code",
+		Background: "https://smartcodecentral.com/images/bookright.jpg",
+		Content:    "You must read clean code book read",
+		ReadTime:   1,
+	}
 
+	create, err := blogClient.Create(context.Background(), item)
+	assert.Nil(t, err)
+	fmt.Println("Create OK: ", create)
+
+	view, err := blogClient.View(context.Background(), &blog.ViewRequest{
+		BlogID: create.Data.BlogID,
+	})
+	assert.Nil(t, err)
+	fmt.Println("View OK: ", view)
+}
+
+func TestView(t *testing.T) {
+	view, err := blogClient.View(context.Background(), &blog.ViewRequest{
+		BlogID: "2004_00000002",
+	})
+	assert.Nil(t, err)
+	fmt.Println("View OK: ", view)
+}
+
+func TestList(t *testing.T) {
+	list, err := blogClient.List(context.Background(), &blog.ListRequest{
+		Offset: 0,
+		Limit:  10,
+	})
+	assert.Nil(t, err)
+	fmt.Println("List OK:", list)
 }

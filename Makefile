@@ -26,7 +26,13 @@ genpb:
 		--swagger_out=logtostderr=true:grpc-gen/user \
 		--grpc-gateway_out=logtostderr=true:grpc-gen/user \
 		idl/user.proto
-runLocal: 
-	go run main.go blogs --config config.dev.toml
+run-blog: 
+	go run main.go blog --config config.dev.toml
+
+run-user: 
+	go run main.go user --config config.dev.toml
+
+run-image: 
+	go run main.go images --config config.dev.toml
 
 deploy: clean build

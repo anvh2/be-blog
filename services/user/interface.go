@@ -3,14 +3,14 @@ package backend
 import (
 	"context"
 
-	"github.com/anvh2/be-blog/plugins/storages/mysql"
+	pb "github.com/anvh2/be-blog/grpc-gen/user"
 )
 
-// UserDb ...
-type UserDb interface {
-	Create(ctx context.Context, user *mysql.UserData) error
-	Read(ctx context.Context, userID string) (*mysql.UserData, error)
-	ReadViaUsername(ctx context.Context, username string) (*mysql.UserData, error)
+// UserDB ...
+type UserDB interface {
+	Create(ctx context.Context, user *pb.UserData) error
+	Read(ctx context.Context, userID string) (*pb.UserData, error)
+	ReadViaUsername(ctx context.Context, username string) (*pb.UserData, error)
 	NextUserID(ctx context.Context, createTime int64) (string, error)
 	Close()
 }

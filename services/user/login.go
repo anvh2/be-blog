@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/anvh2/be-blog/plugins/encode"
 	"github.com/anvh2/be-blog/plugins/errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/spf13/viper"
@@ -40,9 +41,9 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 
 	s.logger.Info("[Login] login request", zap.Any("req", req))
 
-	user, err := s.userDb.ReadViaUsername(ctx, req.Username)
+	user, err := s.userDB.ReadViaUsername(ctx, req.Username)
 	if err != nil {
-		s.logger.Error("[Logi] failed to read user via username", zap.String("username", req.Username))
+		s.logger.Error("[Login] failed to read user via username", zap.String("username", req.Username))
 		return &pb.LoginResponse{
 			Error: &pb.Error{
 				Code:    errors.FailedLogin,
@@ -51,8 +52,9 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		}, nil
 	}
 
-	if user.Password != req.Password {
-		s.logger.Error("[Login] invalid password", zap.String("username", req.Username), zap.String("invalid_pass", req.Password))
+	if ok, err := encode.VerifyPassword(req.Password, user.Password); !ok || err != nil {
+		s.logger.Error("[Login] invalid password", zap.String("username", req.Username), zap.String("invalid_pass", req.Password),
+			zap.Error(err))
 		return &pb.LoginResponse{
 			Error: &pb.Error{
 				Code:    errors.InvalidPassword,
@@ -89,7 +91,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 }
 
 func (s *Server) signToken(username string) (string, error) {
-	expiration := time.Now().Add(viper.GetDuration("user.expire_token_time"))
+	expiration := time.Now().Add(viper.GetDuration("user_service.expire_token_time") * time.Second)
 	claims := &Claims{
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
@@ -98,6 +100,5 @@ func (s *Server) signToken(username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(viper.GetString("user.jwt_key"))
-
+	return token.SignedString([]byte(viper.GetString("user_service.jwt_key")))
 }

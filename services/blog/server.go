@@ -2,54 +2,71 @@ package backend
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/anvh2/be-blog/common"
 	pb "github.com/anvh2/be-blog/grpc-gen/blog"
+	goredis "github.com/go-redis/redis"
 
 	"google.golang.org/grpc"
 
-	"github.com/anvh2/be-blog/plugins/storages/sqlite"
+	"github.com/anvh2/be-blog/plugins/storages/database"
+	"github.com/anvh2/be-blog/plugins/storages/mysql"
+	"github.com/anvh2/be-blog/plugins/storages/redis"
 
 	"github.com/jinzhu/gorm"
-	// include gorm sqlite
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	// mysql driver
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
 // Server ...
 type Server struct {
-	blogDb BlogDb
+	blogDB BlogDB
 	logger *zap.Logger
 }
 
 // NewServer ...
 func NewServer() *Server {
-	config := zap.NewProductionConfig()
-
-	config.OutputPaths = []string{
-		viper.GetString("blog.log_path"),
-	}
-	config.EncoderConfig.LevelKey = "level"
-	config.EncoderConfig.TimeKey = "timestamp"
-	config.EncoderConfig.CallerKey = "caller"
-	config.EncoderConfig.MessageKey = "message"
-
-	logger, err := config.Build()
+	logger, err := common.NewLogger(viper.GetString("blog.log_path"))
 	if err != nil {
-		fmt.Println("failed to new logger production")
+		log.Fatal("failed to new logger production\n", err)
 	}
 
-	db, err := gorm.Open("sqlite3", viper.GetString("blog.data_path"))
+	conStr := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&multiStatements=true",
+		viper.GetString("mysql.user"),
+		viper.GetString("mysql.pass"),
+		viper.GetString("mysql.addr"),
+		viper.GetString("mysql.db_name"))
+	db, err := gorm.Open("mysql", conStr)
 	if err != nil {
-		logger.Error("failed to connection database", zap.Error(err))
-		// return err
+		logger.Fatal("failed to connection database", zap.Error(err))
 	}
 
-	sqlite.NewBlogDb(db, logger)
+	storageBlogDB, err := mysql.NewBlogDB(db, logger)
+	if err != nil {
+		logger.Fatal("failed to init storage blogDB", zap.Error(err))
+	}
+
+	redisCli := goredis.NewClient(&goredis.Options{
+		Addr:       viper.GetString("redis.addr"),
+		Password:   "",
+		MaxRetries: viper.GetInt("redis.max_retries"),
+	})
+
+	if err := redisCli.Ping().Err(); err != nil {
+		logger.Fatal("failed to connect redis", zap.Error(err))
+	}
+
+	cacheBlogDB := redis.NewBlogDB(redisCli, logger)
+
+	blogDb := database.NewBlogDB(storageBlogDB, cacheBlogDB, logger)
+
 	return &Server{
 		logger: logger,
+		blogDB: blogDb,
 	}
 }
 
@@ -65,7 +82,7 @@ func (s *Server) Run() error {
 
 	server.EnableHTTP(pb.RegisterBlogServiceHandlerFromEndpoint, "")
 	server.AddShutdownHook(func() {
-		s.blogDb.Close()
+		s.blogDB.Close()
 	})
 	server.WithHTTPAuthFunc(s.authen, []string{""})
 

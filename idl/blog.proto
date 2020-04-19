@@ -54,37 +54,38 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 service BlogService {
     rpc List (ListRequest) returns (ListResponse) {
         option (google.api.http) = {
-            get: "/v1/blogs"
+            get: "/v1/blog/list"
         };
     }
+
     rpc Create (CreateRequest) returns (CreateResponse) {
         option (google.api.http) = {
-            post: "/v1/create"
+            post: "/v1/blog/create"
             body: "*"
         };
     }
 
-    rpc Get (GetRequest) returns (GetResponse) {
+    rpc View (ViewRequest) returns (ViewResponse) {
         option (google.api.http) = {
-            get: "/v1/blog/{blogID}"
+            get: "/v1/blog/view/{blogID}"
         };
     }
 
     rpc Update (UpdateRequest) returns (UpdateResponse) {
         option (google.api.http) = {
-            put: "/v1/blog/{blogID}"
+            put: "/v1/blog/update/{blogID}"
         };
     }
 
     rpc Remove (RemoveRequest) returns (RemoveResponse) {
         option (google.api.http) = {
-            put: "/v1/blog/{blogID}"
+            put: "/v1/blog/remove/{blogID}"
         };
     }
 
     rpc Publish (PublishRequest) returns (PublishResponse) {
         option (google.api.http) = {
-            put: "/v1/blog/{blogID}"
+            put: "/v1/blog/publish/{blogID}"
         };
     }
 }
@@ -103,13 +104,14 @@ enum Type {
 }
 
 message ListRequest {
-    int64 limit = 1;
-    int64 offset = 2;
+    int32 limit = 1;
+    int32 offset = 2;
 }
 
 message ListResponse {
     message Data {
-        repeated BlogData blog = 1;
+        repeated BlogData blogs = 1;
+        int32 totalBlogs = 2;
     }
     Data data = 1;
     Error error = 2;
@@ -132,11 +134,11 @@ message CreateResponse {
     Error error = 2;
 }
 
-message GetRequest {
+message ViewRequest {
     string blogID = 1;
 }
 
-message GetResponse {
+message ViewResponse {
     message Data {
         BlogData blog = 1;
     }
@@ -199,19 +201,18 @@ message BlogData {
     int64 createTime = 6;
     Status status = 7;
     Type type = 8;
-    int64 likes = 9;
-    int64 views = 10;
-    repeated Comment comments = 11 [(gogoproto.moretags) = "gorm:\"-\""];
-    string commentStr = 12 [(gogoproto.moretags) = "json:\"-\""];
-    repeated string tags = 13 [(gogoproto.moretags) = "gorm:\"-\""];
-    string tagStr = 14 [(gogoproto.moretags) = "json:\"-\""];
-    repeated string images = 15 [(gogoproto.moretags) = "gorm:\"-\""];
-    string imagesStr = 16 [(gogoproto.moretags) = "json:\"-\""];
-    string userID = 17;
-    int32 readTime = 18;
+    string userID = 9;
+    string userDName = 10  [(gogoproto.moretags) = "gorm:\"-\""];
+    string userAvatar = 11  [(gogoproto.moretags) = "gorm:\"-\""];
+    int32 readTime = 12;
+    int64 likes = 13;
+    int64 views = 14;
+    repeated string tags = 15 [(gogoproto.moretags) = "gorm:\"-\""];
+    string tagStr = 16 [(gogoproto.moretags) = "json:\"-\""];
 }
 
 message Error {
     int32 code = 1;
     string message = 2;
+    string detail = 3;
 }

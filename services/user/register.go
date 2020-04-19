@@ -5,8 +5,9 @@ import (
 	"time"
 
 	pb "github.com/anvh2/be-blog/grpc-gen/user"
+	"github.com/anvh2/be-blog/plugins/encode"
 	"github.com/anvh2/be-blog/plugins/errors"
-	"github.com/anvh2/be-blog/plugins/storages/mysql"
+	"github.com/anvh2/be-blog/utils"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -37,6 +38,14 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 				Message: errors.GetMessage(errors.EmptyDName),
 			},
 		}, nil
+	} else if req.Email == "" {
+		s.logger.Error("[Login] empty email", zap.String("username", req.Username))
+		return &pb.RegisterResponse{
+			Error: &pb.Error{
+				Code:    errors.EmptyEmail,
+				Message: errors.GetMessage(errors.EmptyEmail),
+			},
+		}, nil
 	}
 
 	s.logger.Info("[Login] register request", zap.Any("req", req))
@@ -51,7 +60,7 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 		}, nil
 	}
 
-	userID, err := s.userDb.NextUserID(ctx, time.Now().UnixNano()/1e6)
+	userID, err := s.userDB.NextUserID(ctx, time.Now().UnixNano()/1e6)
 	if err != nil {
 		s.logger.Error("[Login] failed to generate userID", zap.String("username", req.Username), zap.Error(err))
 		return &pb.RegisterResponse{
@@ -62,20 +71,34 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 		}, nil
 	}
 
-	user := &mysql.UserData{
-		UserID:   userID,
-		Username: req.Username,
-		Password: req.Password,
-		DName:    req.DName,
-		Avatar:   req.Avatar,
-		Role:     int32(pb.Role_UNKNOWN),
+	encryptpwd, err := encode.HashPassword(req.Password)
+	if err != nil {
+		s.logger.Error("[Login] failed to hash password", zap.String("username", req.Username), zap.Error(err))
+		return &pb.RegisterResponse{
+			Error: &pb.Error{
+				Code:    errors.FailedHashPassword,
+				Message: errors.GetMessage(errors.FailedHashPassword),
+			},
+		}, nil
+	}
+
+	user := &pb.UserData{
+		UserID:         userID,
+		Username:       req.Username,
+		Password:       encryptpwd,
+		DName:          req.DName,
+		Email:          req.Email,
+		Avatar:         req.Avatar,
+		Role:           pb.Role_UNKNOWN,
+		RegisteredTime: utils.TimeToMs(time.Now()),
+		RegisterSource: pb.Source_ORIGIN,
 	}
 
 	if req.Avatar == "" {
-		user.Avatar = viper.GetString("user.default_avatar")
+		user.Avatar = viper.GetString("user_service.default_avatar")
 	}
 
-	err = s.userDb.Create(ctx, user)
+	err = s.userDB.Create(ctx, user)
 	if err != nil {
 		s.logger.Error("[Login] failed to create new user", zap.String("username", req.Username))
 		return &pb.RegisterResponse{
