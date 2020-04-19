@@ -33,6 +33,7 @@ func NewServer() *Server {
 	logger, err := common.NewLogger(viper.GetString("blog.log_path"))
 	if err != nil {
 		if viper.GetString("app.env") == "staging" {
+			fmt.Println("Create new development logger")
 			logger, err = zap.NewDevelopment()
 		} else {
 			log.Fatal("failed to new logger production\n", err)
