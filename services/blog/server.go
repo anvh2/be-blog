@@ -50,6 +50,9 @@ func NewServer() *Server {
 		logger.Fatal("failed to connection database", zap.Error(err))
 	}
 
+	val := db.Raw("show processlist;").Value
+	fmt.Println("Show process list", val)
+
 	storageBlogDB, err := mysql.NewBlogDB(db, logger)
 	if err != nil {
 		logger.Fatal("failed to init storage blogDB", zap.Error(err))
