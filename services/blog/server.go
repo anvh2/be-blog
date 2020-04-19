@@ -82,6 +82,7 @@ func NewServer() *Server {
 func (s *Server) Run() error {
 	if viper.GetString("app.env") == "staging" {
 		defer func() {
+			fmt.Println("Crash")
 			if r := recover(); r != nil {
 				fmt.Println("recovered", r)
 			}
