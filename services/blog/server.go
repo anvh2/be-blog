@@ -34,7 +34,7 @@ func NewServer() *Server {
 	if err != nil {
 		if viper.GetString("app.env") == "staging" {
 			fmt.Println("Create new development logger")
-			logger, err = zap.NewDevelopment()
+			logger = zap.NewExample()
 		} else {
 			log.Fatal("failed to new logger production\n", err)
 		}
