@@ -34,7 +34,10 @@ func NewServer() *Server {
 	if err != nil {
 		if viper.GetString("app.env") == "staging" {
 			fmt.Println("Create new development logger")
-			logger = zap.NewExample()
+			logger, err = zap.NewDevelopment()
+			if err != nil {
+				fmt.Println("Failed to create new development logger")
+			}
 		} else {
 			log.Fatal("failed to new logger production\n", err)
 		}
@@ -49,9 +52,6 @@ func NewServer() *Server {
 	if err != nil {
 		logger.Fatal("failed to connection database", zap.Error(err))
 	}
-
-	val := db.Raw("show processlist;").Value
-	fmt.Println("Show process list", val)
 
 	storageBlogDB, err := mysql.NewBlogDB(db, logger)
 	if err != nil {
