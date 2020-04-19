@@ -32,7 +32,11 @@ type Server struct {
 func NewServer() *Server {
 	logger, err := common.NewLogger(viper.GetString("blog.log_path"))
 	if err != nil {
-		log.Fatal("failed to new logger production\n", err)
+		if viper.GetString("app.env") == "staging" {
+			logger, err = zap.NewDevelopment()
+		} else {
+			log.Fatal("failed to new logger production\n", err)
+		}
 	}
 
 	conStr := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&multiStatements=true",
@@ -52,7 +56,7 @@ func NewServer() *Server {
 
 	redisCli := goredis.NewClient(&goredis.Options{
 		Addr:       viper.GetString("redis.addr"),
-		Password:   "",
+		Password:   viper.GetString("redis.pass"),
 		MaxRetries: viper.GetInt("redis.max_retries"),
 	})
 

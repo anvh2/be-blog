@@ -1,5 +1,6 @@
 [app]
 app_version = "0.0.1"
+env = "staging"
 
 [blog]
 grpc_port = 55101
@@ -25,11 +26,13 @@ form_file = "image"
 log_path = "logs/images.log"
 
 [mysql]
-addr = "127.0.0.1"
-user = "root"
-pass = "123456"
-db_name = "db_blog"
+addr = "remotemysql.com"
+user = "YsEOTRc0pD"
+pass = "0dYfRSGYKT"
+db_name = "YsEOTRc0pD"
 
 [redis]
-addr = "127.0.0.1:6379"
+db_name = "wusblog"
+addr = "redis-18633.c13.us-east-1-3.ec2.cloud.redislabs.com:18633"
+pass = "tFCARObRSvMmThroNOq01xYCMpGgh9JG"
 max_retries = 3 
