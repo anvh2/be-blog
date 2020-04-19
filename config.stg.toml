@@ -1,0 +1,35 @@
+[app]
+app_version = "0.0.1"
+
+[blog]
+grpc_port = 55101
+http_port = 55102
+proxy_port = 55103
+log_path = "logs/blog.log"
+data_path = "plugins/storages/database/blog-200315.db"
+
+[user_service]
+grpc_port = 55301
+http_port = 55302
+proxy_port = 55303
+log_path = "logs/user.log"
+default_avatar = ""
+expire_token_time = 2592000 # 30 days
+jwt_key = "abc"
+salt_pwd = "abc"
+
+[images]
+http_port = 55201
+dir_storage = "./public/images/"
+form_file = "image"
+log_path = "logs/images.log"
+
+[mysql]
+addr = "127.0.0.1"
+user = "root"
+pass = "123456"
+db_name = "db_blog"
+
+[redis]
+addr = "127.0.0.1:6379"
+max_retries = 3 
