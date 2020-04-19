@@ -11,6 +11,8 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.3
 	github.com/jinzhu/gorm v1.9.12
+	github.com/onsi/ginkgo v1.12.0 // indirect
+	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/prometheus/common v0.9.1
 	github.com/soheilhy/cmux v0.1.4
 	github.com/spf13/cobra v1.0.0

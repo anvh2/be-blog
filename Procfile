@@ -1,0 +1,1 @@
+web: bin/be-blog blog --config config.stg.toml
