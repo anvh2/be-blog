@@ -3,11 +3,13 @@ package backend
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/anvh2/be-blog/common"
 	"github.com/anvh2/be-blog/plugins/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
@@ -17,20 +19,35 @@ import (
 // Server ...
 type Server struct {
 	router     *mux.Router
-	logger     *zap.Logger
+	logger     *common.WrappedLogger
 	dirStorage string
 }
 
 // NewServer ...
 func NewServer() *Server {
 	router := mux.NewRouter()
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(err)
+
+	logger := &zap.Logger{}
+	var err error
+	if viper.GetString("app.env") == "staging" || viper.GetString("app.env") == "development" {
+		fmt.Println("Create new development logger")
+		logger, err = common.NewDevelopmentZapLogger()
+		if err != nil {
+			fmt.Println("Failed to create new development logger")
+		}
+	} else {
+		logger, err = common.NewProductionZapLogger(viper.GetString("blog.log_path"))
+		if err != nil {
+			log.Fatal("failed to new logger production\n", err)
+
+		}
 	}
+
+	wlogger := common.NewWrappedLogger(logger)
+
 	return &Server{
 		router:     router,
-		logger:     logger,
+		logger:     wlogger,
 		dirStorage: viper.GetString("images.dir_storage"),
 	}
 }
@@ -47,11 +64,11 @@ func (s *Server) Run() {
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
-			s.logger.Fatal("[Run] failed to start server")
+			s.logger.WFatal("[Run] failed to start server")
 		}
 	}()
 
-	s.logger.Info("[Run] Now server is listening ...", zap.Int("port", port))
+	s.logger.WInfo("[Run] Now server is listening ...", zap.Int("port", port))
 
 	sig := make(chan os.Signal, 1)
 	done := make(chan struct{})

@@ -20,16 +20,29 @@ import (
 
 // Server ...
 type Server struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	userDB UserDB
 }
 
 // NewServer ...
 func NewServer() *Server {
-	logger, err := common.NewLogger(viper.GetString("user_service.log_path"))
-	if err != nil {
-		log.Fatal("failed to new logger production\n", err)
+	logger := &zap.Logger{}
+	var err error
+	if viper.GetString("app.env") == "staging" || viper.GetString("app.env") == "development" {
+		fmt.Println("Create new development logger")
+		logger, err = common.NewDevelopmentZapLogger()
+		if err != nil {
+			fmt.Println("Failed to create new development logger")
+		}
+	} else {
+		logger, err = common.NewProductionZapLogger(viper.GetString("blog.log_path"))
+		if err != nil {
+			log.Fatal("failed to new logger production\n", err)
+
+		}
 	}
+
+	wlogger := common.NewWrappedLogger(logger)
 
 	conStr := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&multiStatements=true",
 		viper.GetString("mysql.user"),
@@ -41,7 +54,7 @@ func NewServer() *Server {
 		logger.Fatal("failed to connection database", zap.Error(err))
 	}
 
-	storageUserDB, err := mysql.NewUserDB(db, logger)
+	storageUserDB, err := mysql.NewUserDB(db, wlogger)
 	if err != nil {
 		logger.Fatal("failed to init storage blogDB", zap.Error(err))
 	}
@@ -56,12 +69,12 @@ func NewServer() *Server {
 		logger.Fatal("failed to connect redis", zap.Error(err))
 	}
 
-	cacheUserDB := redis.NewUserDB(redisCli, logger)
+	cacheUserDB := redis.NewUserDB(redisCli, wlogger)
 
-	userDB := database.NewUserDB(storageUserDB, cacheUserDB, logger)
+	userDB := database.NewUserDB(storageUserDB, cacheUserDB, wlogger)
 
 	return &Server{
-		logger: logger,
+		logger: wlogger,
 		userDB: userDB,
 	}
 }
@@ -74,7 +87,7 @@ func (s *Server) Run() error {
 		pb.RegisterUserServiceServer(server, s)
 	})
 	if err != nil {
-		s.logger.Fatal("Can't new grpc server", zap.Error(err))
+		s.logger.WFatal("Can't new grpc server", zap.Error(err))
 	}
 
 	server.EnableHTTP(pb.RegisterUserServiceHandlerFromEndpoint, "")

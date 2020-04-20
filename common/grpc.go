@@ -15,7 +15,6 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/soheilhy/cmux"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -32,7 +31,7 @@ type GRPCServer struct {
 	server         *grpc.Server
 	listener       net.Listener
 	port           int
-	logger         *zap.Logger
+	logger         *WrappedLogger
 	rootPath       string
 	grpcRegister   GRPCRegister
 	httpRegister   HTTPRegister
@@ -164,7 +163,7 @@ func (s *GRPCServer) AddShutdownHook(fn func()) {
 }
 
 // WithLogger ...
-func (s *GRPCServer) WithLogger(logger *zap.Logger) {
+func (s *GRPCServer) WithLogger(logger *WrappedLogger) {
 	s.logger = logger
 }
 

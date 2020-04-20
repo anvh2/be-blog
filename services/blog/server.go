@@ -25,23 +25,28 @@ import (
 // Server ...
 type Server struct {
 	blogDB BlogDB
-	logger *zap.Logger
+	logger *common.WrappedLogger
 }
 
 // NewServer ...
 func NewServer() *Server {
-	logger, err := common.NewLogger(viper.GetString("blog.log_path"))
-	if err != nil {
-		if viper.GetString("app.env") == "staging" {
-			fmt.Println("Create new development logger")
-			logger, err = zap.NewDevelopment()
-			if err != nil {
-				fmt.Println("Failed to create new development logger")
-			}
-		} else {
+	logger := &zap.Logger{}
+	var err error
+	if viper.GetString("app.env") == "staging" || viper.GetString("app.env") == "development" {
+		fmt.Println("Create new development logger")
+		logger, err = common.NewDevelopmentZapLogger()
+		if err != nil {
+			fmt.Println("Failed to create new development logger")
+		}
+	} else {
+		logger, err = common.NewProductionZapLogger(viper.GetString("blog.log_path"))
+		if err != nil {
 			log.Fatal("failed to new logger production\n", err)
+
 		}
 	}
+
+	wlogger := common.NewWrappedLogger(logger)
 
 	conStr := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&multiStatements=true",
 		viper.GetString("mysql.user"),
@@ -50,12 +55,12 @@ func NewServer() *Server {
 		viper.GetString("mysql.db_name"))
 	db, err := gorm.Open("mysql", conStr)
 	if err != nil {
-		logger.Fatal("failed to connection database", zap.Error(err))
+		wlogger.Fatal("failed to connection database", zap.Error(err))
 	}
 
-	storageBlogDB, err := mysql.NewBlogDB(db, logger)
+	storageBlogDB, err := mysql.NewBlogDB(db, wlogger)
 	if err != nil {
-		logger.Fatal("failed to init storage blogDB", zap.Error(err))
+		wlogger.Fatal("failed to init storage blogDB", zap.Error(err))
 	}
 
 	redisCli := goredis.NewClient(&goredis.Options{
@@ -65,15 +70,15 @@ func NewServer() *Server {
 	})
 
 	if err := redisCli.Ping().Err(); err != nil {
-		logger.Fatal("failed to connect redis", zap.Error(err))
+		wlogger.Fatal("failed to connect redis", zap.Error(err))
 	}
 
-	cacheBlogDB := redis.NewBlogDB(redisCli, logger)
+	cacheBlogDB := redis.NewBlogDB(redisCli, wlogger)
 
-	blogDb := database.NewBlogDB(storageBlogDB, cacheBlogDB, logger)
+	blogDb := database.NewBlogDB(storageBlogDB, cacheBlogDB, wlogger)
 
 	return &Server{
-		logger: logger,
+		logger: wlogger,
 		blogDB: blogDb,
 	}
 }

@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 
+	"github.com/anvh2/be-blog/common"
 	"github.com/anvh2/be-blog/plugins/storages/mysql"
 	"github.com/anvh2/be-blog/plugins/storages/redis"
-	"go.uber.org/zap"
 
 	pb "github.com/anvh2/be-blog/grpc-gen/user"
 	goredis "github.com/go-redis/redis"
@@ -13,13 +13,13 @@ import (
 
 // UserDB ...
 type UserDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *mysql.UserDB
 	cache  *redis.UserDB
 }
 
 // NewUserDB ...
-func NewUserDB(db *mysql.UserDB, cache *redis.UserDB, logger *zap.Logger) *UserDB {
+func NewUserDB(db *mysql.UserDB, cache *redis.UserDB, logger *common.WrappedLogger) *UserDB {
 	return &UserDB{
 		db:     db,
 		cache:  cache,

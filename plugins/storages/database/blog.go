@@ -4,9 +4,9 @@ import (
 	"context"
 	"sort"
 
+	"github.com/anvh2/be-blog/common"
 	"github.com/anvh2/be-blog/plugins/storages/mysql"
 	"github.com/anvh2/be-blog/plugins/storages/redis"
-	"go.uber.org/zap"
 
 	pb "github.com/anvh2/be-blog/grpc-gen/blog"
 	goredis "github.com/go-redis/redis"
@@ -14,13 +14,13 @@ import (
 
 // BlogDB ...
 type BlogDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *mysql.BlogDB
 	cache  *redis.BlogDB
 }
 
 // NewBlogDB ...
-func NewBlogDB(db *mysql.BlogDB, cache *redis.BlogDB, logger *zap.Logger) *BlogDB {
+func NewBlogDB(db *mysql.BlogDB, cache *redis.BlogDB, logger *common.WrappedLogger) *BlogDB {
 	return &BlogDB{
 		db:     db,
 		cache:  cache,
