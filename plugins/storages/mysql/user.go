@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/anvh2/be-blog/common"
 	pb "github.com/anvh2/be-blog/grpc-gen/user"
 	"github.com/anvh2/be-blog/utils"
 	"github.com/jinzhu/gorm"
@@ -13,12 +14,12 @@ import (
 
 // UserDB ...
 type UserDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *gorm.DB
 }
 
 // NewUserDB ...
-func NewUserDB(db *gorm.DB, logger *zap.Logger) (*UserDB, error) {
+func NewUserDB(db *gorm.DB, logger *common.WrappedLogger) (*UserDB, error) {
 	err := db.AutoMigrate(&pb.UserData{}).Error
 	if err != nil {
 		return nil, err

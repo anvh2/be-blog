@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/anvh2/be-blog/common"
 	pb "github.com/anvh2/be-blog/grpc-gen/user"
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
@@ -17,12 +18,12 @@ const (
 
 // UserDB ...
 type UserDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *redis.Client
 }
 
 // NewUserDB ...
-func NewUserDB(db *redis.Client, logger *zap.Logger) *UserDB {
+func NewUserDB(db *redis.Client, logger *common.WrappedLogger) *UserDB {
 	return &UserDB{
 		logger: logger,
 		db:     db,

@@ -64,11 +64,11 @@ func (s *Server) Run() {
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
-			s.logger.WFatal("[Run] failed to start server")
+			s.logger.Fatal("[Run] failed to start server")
 		}
 	}()
 
-	s.logger.WInfo("[Run] Now server is listening ...", zap.Int("port", port))
+	s.logger.Info("[Run] Now server is listening ...", zap.Int("port", port))
 
 	sig := make(chan os.Signal, 1)
 	done := make(chan struct{})

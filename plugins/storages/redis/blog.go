@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 
+	"github.com/anvh2/be-blog/common"
 	pb "github.com/anvh2/be-blog/grpc-gen/blog"
 )
 
@@ -19,12 +20,12 @@ var (
 
 // BlogDB ...
 type BlogDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *redis.Client
 }
 
 // NewBlogDB ...
-func NewBlogDB(db *redis.Client, logger *zap.Logger) *BlogDB {
+func NewBlogDB(db *redis.Client, logger *common.WrappedLogger) *BlogDB {
 	return &BlogDB{
 		db:     db,
 		logger: logger,

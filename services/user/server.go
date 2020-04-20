@@ -87,7 +87,7 @@ func (s *Server) Run() error {
 		pb.RegisterUserServiceServer(server, s)
 	})
 	if err != nil {
-		s.logger.WFatal("Can't new grpc server", zap.Error(err))
+		s.logger.Fatal("Can't new grpc server", zap.Error(err))
 	}
 
 	server.EnableHTTP(pb.RegisterUserServiceHandlerFromEndpoint, "")

@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 
+	"github.com/anvh2/be-blog/common"
 	pb "github.com/anvh2/be-blog/grpc-gen/blog"
 	"github.com/anvh2/be-blog/utils"
 )
@@ -18,12 +19,12 @@ const (
 
 // BlogDB ...
 type BlogDB struct {
-	logger *zap.Logger
+	logger *common.WrappedLogger
 	db     *gorm.DB
 }
 
 // NewBlogDB ...
-func NewBlogDB(db *gorm.DB, logger *zap.Logger) (*BlogDB, error) {
+func NewBlogDB(db *gorm.DB, logger *common.WrappedLogger) (*BlogDB, error) {
 	err := db.AutoMigrate(&pb.BlogData{}).Error
 	if err != nil {
 		return nil, err
